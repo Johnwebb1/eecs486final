@@ -73,22 +73,23 @@ client = tweepy.Client(bearer_token= bearer_token)
 tweet_dict = {}
 # Loop through NBA Teams -> Get max_results amount of followers
 for screen_name in nba_teams:
+    print(screen_name)
     # Get max_results amount of followers
-    users = client.get_users_followers(id=nba_ids[screen_name], max_results=6)
+    users = client.get_users_followers(id=nba_ids[screen_name], max_results=10)
     # Loop through followers returned -> Get max_results amount of tweets
     for user in users.data:
-        print("User Info")
-        print(user)
-        print(user["id"])
-        print("Tweets")
         tweets = client.get_users_tweets(id=user["id"], max_results=5)
         if tweets.data == None:
             continue
         for tweet in tweets.data:
             tweet_dict[tweet["id"]] = {
                 "text": tweet["text"],
-                "tweet_id": tweet["id"]
+                "team": screen_name
             }
-    time.sleep(40)
+    # To avoid overloading twitter api (900 requests per 15 minutes)
+    time.sleep(60)
 
+out_file = open("data/sample.json", "w")
+json.dump(tweet_dict, out_file, indent="")
+out_file.close()
 print(tweet_dict)
