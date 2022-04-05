@@ -3,6 +3,7 @@ import os
 import time
 import json
 import tweepy
+import environment
 
 """
 This file must work to scrape tweets using the twitter api and tweepy library.
@@ -10,11 +11,11 @@ This file should write the data in json format to a file in the data folder.
 """
 
 #Authentication information
-api_consumer_key = "5kbDBhjfQvD1wMrU1LUCzWpSe"
-api_consumer_secret = "qRBInfIySQHuY62EME4Ye6K90q65Jtr9LFjGeiqbjDDMyvanmx"
-bearer_token = "AAAAAAAAAAAAAAAAAAAAAAapawEAAAAALYDG3fhEkMQhptEbQlkiafPndd8%3Df8xDASGwY2yulUdXXyurvIWUL5xxEH8hhLYZjyGnOAWZypfWOu"
-access_token = "1508909827778568199-NLZd2nxQ9sVVqsZzQVVClTpvRTVWkf"
-access_secret = "oRt9b2JORICdScib6fD6YjioVVfllkICIjN8ZbZmH8ajB"
+api_consumer_key = environment.api_key
+api_consumer_secret = environment.api_secret
+bearer_token = environment.b_token
+access_token = environment.a_token
+access_secret = environment.a_secret
 
 nba_teams = {
     "Atlanta Hawks": "ATLHawks",
