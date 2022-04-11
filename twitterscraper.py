@@ -17,39 +17,6 @@ bearer_token = environment.b_token
 access_token = environment.a_token
 access_secret = environment.a_secret
 
-nba_teams = {
-    "Atlanta Hawks": "ATLHawks",
-    "Boston Celtics": "celtics",
-    "Brooklyn Nets": "BrooklynNets",
-    "Charlotte Hornets": "hornets",
-    "Chicago Bulls": "chicagobulls",
-    "Cleveland Cavaliers": "cavs",
-    "Dallas Mavericks": "dallasmavs",
-    "Denver Nuggets": "nuggets",
-    "Detroit Pistons": "DetroitPistons",
-    "Golden State Warriors": "warriors",
-    "Houston Rockets": "HoustonRockets",
-    "Indiana Pacers": "Pacers",
-    "Los Angeles Clippers": "LAClippers",
-    "Los Angeles Lakers": "Lakers",
-    "Memphis Grizzlies": "memgrizz",
-    "Miami Heat": "MiamiHEAT",
-    "Milwaukee Bucks": "Bucks",
-    "Minnesota Timberwolves": "Timberwolves",
-    "New Orleans Pelicans": "PelicansNBA",
-    "New York Knicks": "nyknicks",
-    "Oklahoma City Thunder": "okcthunder",
-    "Orlando Magic": "OrlandoMagic",
-    "Philadelphia 76ers": "sixers",
-    "Phoenix Suns": "Suns",
-    "Portland Trail Blazers": "trailblazers",
-    "Sacramento Kings": "SacrementoKings",
-    "San Antonio Spurs": "spurs",
-    "Toronto Raptors": "Raptors",
-    "Utah Jazz": "utahjazz",
-    "Washington Wizards": "WashWizards"
-}
-
 nba_ids = {'Atlanta Hawks': 17292143, 'Boston Celtics': 18139461,
 'Brooklyn Nets': 18552281, 'Charlotte Hornets': 21308488, 'Chicago Bulls': 16212685,
 'Cleveland Cavaliers': 19263978, 'Dallas Mavericks': 22185437, 'Denver Nuggets': 26074296,
@@ -72,25 +39,29 @@ api = tweepy.API(auth, wait_on_rate_limit = True)
 client = tweepy.Client(bearer_token= bearer_token)
 
 tweet_dict = {}
+start = time.time()
 # Loop through NBA Teams -> Get max_results amount of followers
-for screen_name in nba_teams:
-    print(screen_name)
+for team_name in nba_ids:
+    running = time.time() - start
+    print(running)
+    print(team_name)
     # Get max_results amount of followers
-    users = client.get_users_followers(id=nba_ids[screen_name], max_results=10)
+    users = client.get_users_followers(id=nba_ids[team_name], max_results=36)
     # Loop through followers returned -> Get max_results amount of tweets
     for user in users.data:
-        tweets = client.get_users_tweets(id=user["id"], max_results=5)
+        tweets = client.get_users_tweets(id=user.id, max_results=5)
         if tweets.data == None:
             continue
         for tweet in tweets.data:
-            tweet_dict[tweet["id"]] = {
-                "text": tweet["text"],
-                "team": screen_name
+            tweet_dict[tweet.id] = {
+                "text": tweet.text,
+                "team": team_name,
+                "user": user.id
             }
     # To avoid overloading twitter api (900 requests per 15 minutes)
-    time.sleep(60)
+    time.sleep(192)
 
-out_file = open("data/sample.json", "w")
+print("program took ", time.time() - start, " seconds")
+out_file = open("data/large5400.json", "w")
 json.dump(tweet_dict, out_file, indent="")
 out_file.close()
-print(tweet_dict)
