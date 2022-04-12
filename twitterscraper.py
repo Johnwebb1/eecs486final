@@ -4,6 +4,7 @@ import time
 import json
 import tweepy
 import environment
+from preprocess import preprocess
 
 """
 This file must work to scrape tweets using the twitter api and tweepy library.
@@ -39,29 +40,55 @@ api = tweepy.API(auth, wait_on_rate_limit = True)
 client = tweepy.Client(bearer_token= bearer_token)
 
 tweet_dict = {}
+hashtag_dict = {}
 start = time.time()
 # Loop through NBA Teams -> Get max_results amount of followers
 for team_name in nba_ids:
-    running = time.time() - start
-    print(running)
-    print(team_name)
+    api_count = 0
     # Get max_results amount of followers
-    users = client.get_users_followers(id=nba_ids[team_name], max_results=36)
+    users = client.get_users_followers(id=nba_ids[team_name], max_results=100)
     # Loop through followers returned -> Get max_results amount of tweets
+    user_count = 0
     for user in users.data:
         tweets = client.get_users_tweets(id=user.id, max_results=5)
         if tweets.data == None:
             continue
-        for tweet in tweets.data:
-            tweet_dict[tweet.id] = {
-                "text": tweet.text,
-                "team": team_name,
-                "user": user.id
-            }
+        test = tweets.data[0]
+        test_tweet, hashtags = preprocess(str(test))
+        if test_tweet != "":
+            user_count += 1
+            for tweet in tweets.data:
+                raw_tweet, hashtags = preprocess(str(tweet))
+                if raw_tweet == "":
+                    continue
+                tweet_dict[tweet.id] = {
+                    "text": raw_tweet,
+                    "team": team_name,
+                    "user": user.username
+                }
+                for hashtag in hashtags:
+                    if hashtag in hashtag_dict:
+                        if team_name in hashtag_dict[hashtag]:
+                            hashtag_dict[hashtag][team_name] += 1
+                        else:
+                            hashtag_dict[hashtag][team_name] = 1
+                    else:
+                        hashtag_dict[hashtag] = {
+                            team_name: 1
+                        }
+        if user_count > 5:
+            break
     # To avoid overloading twitter api (900 requests per 15 minutes)
-    time.sleep(192)
+    running = time.time() - start
+    print(running)
+    print(team_name)
+    print("users: ", user_count)
+    time.sleep(150)
 
 print("program took ", time.time() - start, " seconds")
-out_file = open("data/large5400.json", "w")
+out_file = open("data/small.json", "w")
 json.dump(tweet_dict, out_file, indent="")
+out_file.close()
+out_file = open("data/small_hashtag.json", "w")
+json.dump(hashtag_dict, out_file, indent="")
 out_file.close()

@@ -26,8 +26,8 @@ def get_hashtags(text):
 # This function handles emojis in the text.
 # This function strips emojis and returns the text input without emojis
 def emoji_handler(text):
-    new_text = re.sub(r'[\U00010000-\U0010ffff]', '', text)
-    emoji_regex = re.compile('[\U00010000-\U0010ffff]', flags=re.UNICODE)
+    new_text = re.sub(r'[\U00002600s-\U0010ffff]', '', text)
+    emoji_regex = re.compile('[\U00002600-\U0010ffff]', flags=re.UNICODE)
     newest_text = emoji_regex.sub(r'', text)
     return newest_text
 
@@ -40,14 +40,17 @@ def clean_tweet(text):
     # Remove hashtags
     text = re.sub(r'#', '', text)
     # Remove retweets:
-    text = re.sub(r'RT : ', '', text)
+    text = re.sub(r'rt : ', '', text)
     # Selects urls and removes them
     text = re.sub(r'https?:\/\/[A-Za-z0-9\.\/]+', '', text)
     # Selects outlier characters and removes them. Including &
     text = re.sub(r'ðŸ™&amp;', '', text)
     # Selects punctuation and removes
-    punctuation = r"[-+().?!,;:']"
+    punctuation = r"[-+().?!,;:'\"]"
     text = re.sub(punctuation, r"", text)
+    # All unicode above ascii characters
+    hor_ellipse = re.compile('[\U0000007B-\U0010ffff]', flags=re.UNICODE)
+    text = hor_ellipse.sub(r'', text)
     # Selects newlines and removes them
     text = re.sub(r'\n', ' ', text)
     return text
@@ -84,16 +87,8 @@ def preprocess(tweet_text):
     tweet_text = emoji_handler(tweet_text)
     cleaned_tweet = clean_tweet(tweet_text)
     language = language_check(cleaned_tweet)
+    processed_tweet = cleaned_tweet.strip()
     if language != "en":
         return "", []
     else:
-        stemmed_tweet = stemWords(cleaned_tweet)
-        return stemmed_tweet, hashtag_list
-
-# def main():
-#     text = sys.argv[1]
-#     new = preprocess(text)
-#     print(new)
-#
-# if __name__ == "__main__":
-#     main()
+        return processed_tweet, hashtag_list
