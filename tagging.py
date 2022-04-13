@@ -734,10 +734,25 @@ def main():
     # for testing
     print(scoreTotal)
 
-    # write json output
-    output = open("data/large5400_tagged.json", "w")
-    json.dump(tweet_dict, output, indent=2)
-    output.close()
+    tweet_dict_sport = {}
+    tweet_dict_nonsport = {}
+    for i in tweet_dict:
+        if tweet_dict[i]["sportScore"] == 1:
+            tweet_dict_sport[i] = tweet_dict[i]
+        else:
+            tweet_dict_nonsport[i] = tweet_dict[i]
+
+    # write json output for sports related tweets
+    filename1 = data[:-5] + "_tagged_sport.json"
+    output1 = open(filename1, "w")
+    json.dump(tweet_dict_sport, output1, indent=2)
+    output1.close()
+
+    # write json output for non sports related tweets
+    filename2 = data[:-5] + "_tagged_nonsport.json"
+    output2 = open(filename2, "w")
+    json.dump(tweet_dict_nonsport, output2, indent=2)
+    output2.close()
 
     return
 
