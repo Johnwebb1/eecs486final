@@ -18,26 +18,27 @@ bearer_token = environment.b_token
 access_token = environment.a_token
 access_secret = environment.a_secret
 
-nba_ids = {'Atlanta Hawks': 17292143, 'Boston Celtics': 18139461,
-'Brooklyn Nets': 18552281, 'Charlotte Hornets': 21308488, 'Chicago Bulls': 16212685,
-'Cleveland Cavaliers': 19263978, 'Dallas Mavericks': 22185437, 'Denver Nuggets': 26074296,
-'Detroit Pistons': 16727749, 'Golden State Warriors': 26270913, 'Houston Rockets': 19077044,
-'Indiana Pacers': 19409270, 'Los Angeles Clippers': 19564719, 'Los Angeles Lakers': 20346956,
-'Memphis Grizzlies': 7117962, 'Miami Heat': 11026952, 'Milwaukee Bucks': 15900167,
-'Minnesota Timberwolves': 20196159, 'New Orleans Pelicans': 24903350, 'New York Knicks': 20265254,
-'Oklahoma City Thunder': 24925573, 'Orlando Magic': 19537303, 'Philadelphia 76ers': 16201775,
-'Phoenix Suns': 18481113, 'Portland Trail Blazers': 6395222, 'Sacramento Kings': 79538141,
-'San Antonio Spurs': 18371803, 'Toronto Raptors': 73406718, 'Utah Jazz': 18360370,
-'Washington Wizards': 14992591
+# nba_ids = {'Atlanta Hawks': 17292143, 'Boston Celtics': 18139461,
+# 'Brooklyn Nets': 18552281, 'Charlotte Hornets': 21308488, 'Chicago Bulls': 16212685,
+# 'Cleveland Cavaliers': 19263978, 'Dallas Mavericks': 22185437, 'Denver Nuggets': 26074296,
+# 'Detroit Pistons': 16727749, 'Golden State Warriors': 26270913, 'Houston Rockets': 19077044,
+# 'Indiana Pacers': 19409270, 'Los Angeles Clippers': 19564719, 'Los Angeles Lakers': 20346956,
+# 'Memphis Grizzlies': 7117962, 'Miami Heat': 11026952, 'Milwaukee Bucks': 15900167,
+# 'Minnesota Timberwolves': 20196159, 'New Orleans Pelicans': 24903350, 'New York Knicks': 20265254,
+# 'Oklahoma City Thunder': 24925573, 'Orlando Magic': 19537303, 'Philadelphia 76ers': 16201775,
+# 'Phoenix Suns': 18481113, 'Portland Trail Blazers': 6395222, 'Sacramento Kings': 79538141,
+# 'San Antonio Spurs': 18371803, 'Toronto Raptors': 73406718, 'Utah Jazz': 18360370,
+# 'Washington Wizards': 14992591
+# }
+
+nba_ids = {
+    'Sacramento Kings': 667563,
+    'San Antonio Spurs': 18371803,
+    'Toronto Raptors': 73406718,
+    'Utah Jazz': 18360370,
+    'Washington Wizards': 14992591
 }
 
-# nba_ids = {
-#     'Atlanta Hawks': 17292143,
-#     'Detroit Pistons': 16727749,
-#     'Milwaukee Bucks': 15900167,
-#     'Sacramento Kings': 79538141,
-#     'Washington Wizards': 14992591
-# }
 
 # Setting Authentication: *Not used for Twitter endpoints V2.0*
 auth = tweepy.OAuthHandler(api_consumer_key, api_consumer_secret)
@@ -55,10 +56,19 @@ for team_name in nba_ids:
     tweet_count = 0
     api_count = 0
     # Get max_results amount of followers
-    users = client.get_users_followers(id=nba_ids[team_name], max_results=330)
+    nba_tweets = client.get_users_tweets(id=nba_ids[team_name], max_results=20)
+    while nba_tweets.data == None:
+        nba_tweets = client.get_users_tweets(id=nba_ids[team_name], max_results=20)
+    for nba_tweet in nba_tweets.data:
+        users = client.get_liking_users(id=nba_tweet.id, max_results=100)
+        if users.data == None:
+            continue
+        if len(users.data) > 79:
+            break
     # Loop through followers returned -> Get max_results amount of tweets
     for user in users.data:
-        if tweet_count > 74:
+        print(len(users.data))
+        if tweet_count > 89:
             break
         tweets = client.get_users_tweets(id=user.id, max_results=15)
         if tweets.data == None:
@@ -74,7 +84,7 @@ for team_name in nba_ids:
                 "team": team_name,
                 "user": user.username
             }
-            if tweet_count > 74:
+            if tweet_count > 89:
                 break
             for hashtag in hashtags:
                 if hashtag in hashtag_dict:
@@ -89,14 +99,14 @@ for team_name in nba_ids:
     # To avoid overloading twitter api (900 requests per 15 minutes)
     running = time.time() - start
     print(running)
-    print(team_name)
+    print(team_name, " -> ", tweet_count)
     print(len(tweet_dict))
-    time.sleep(210)
+    time.sleep(180)
 
 print("program took ", time.time() - start, " seconds")
-out_file = open("data/dataset2250.json", "w")
+out_file = open("data/last_bit.json", "w")
 json.dump(tweet_dict, out_file, indent="")
 out_file.close()
-out_file = open("data/hashtags2250.json", "w")
+out_file = open("data/last_bit_hashtags.json", "w")
 json.dump(hashtag_dict, out_file, indent="")
 out_file.close()
