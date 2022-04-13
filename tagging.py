@@ -1,19 +1,18 @@
 """
-This file must work to "tag" each tweet with a sport signifier
+This file works to "tag" each tweet with a sport signifier.
 This signifier will tell the program whether or not the specified tweet is about
-sports or not. In this program, we are specifically looking at Basketball.
-
-Text classification
+sports or not. In this program, we are specifically looking at basketball.
 """
-
-# Creating a list of team names, player names, and basketball related terms
-# Then going to iterate through each tweet and if any of those words are in the tweet, it has a sportScore of 1
-# Otherwise the tweet has a sportScore of 0
+# Max Anderson
+# mtando
+# EECS 486 Final Project
 
 import sys
 import os
 import json
 
+
+# list of all teams and team mascots
 teamNames = [
     "boston celtics",
     "celtics",
@@ -88,6 +87,7 @@ teamNames = [
     "spurs"
     ]
 
+# list of general basketball-related terms
 basketballTerms = [
     "nba",
     "eastern conference",
@@ -96,27 +96,26 @@ basketballTerms = [
     "wcf",
     "nba finals",
     "basketball",
+    "b-ball",
+    "bball",
     "three pointers",
     "three point",
     "threes",
     "free throws",
     "free throw",
-    "fts",
-    "score",
     "point guard",
     "shooting guard",
     "small forward",
     "power forward",
-    "coach",
     "dribble",
     "ankle breaker",
     "stepback",
     "floater",
-    "players",
     "half court",
     "full court"
     ]
 
+# list of all NBA player names
 playerNames = [
     "Precious Achiuwa",
     "Steven Adams",
@@ -687,13 +686,11 @@ playerNames = [
     "Gabe York",
     "Thaddeus Young",
     "Trae Young",
-    "Ice Trae",
+    "Trae",
     "Omer Yurtseven",
     "Ivica Zubac"
     ]
 
-# coaches list?
-# list of nba related names (announcers, reporters, etc)
 
 def main():
     data = sys.argv[1]
@@ -702,16 +699,8 @@ def main():
     # load json data into list of tweets
     tweet_dict = json.loads(curr_file.read())
     curr_file.close()
-    
-    # for testing
-    # tweetlist = [
-    #     "This is a tweet about movies.",
-    #     "The NBA is awesome!",
-    #     "Cade Cunningham is so good.",
-    #     "Go Pistons!",
-    #     "i'm a big fan of saddiq bey"
-    #     ]
 
+    # attach a sportScore to each tweet
     scoreTotal = 0
     for t in tweet_dict:
         tweet = tweet_dict[t]["text"].lower()
@@ -727,17 +716,32 @@ def main():
             if pn.lower() in tweet:
                 sportScore = 1
 
-        # assign sportscore to tweet
         scoreTotal += sportScore
         tweet_dict[t]["sportScore"] = sportScore
 
     # for testing
-    print(scoreTotal)
+    # print(scoreTotal)
 
-    # write json output
-    output = open("data/large5400_tagged.json", "w")
-    json.dump(tweet_dict, output, indent=2)
-    output.close()
+    # split full dictionary into sports related and non sports related tweets
+    tweet_dict_sport = {}
+    tweet_dict_nonsport = {}
+    for i in tweet_dict:
+        if tweet_dict[i]["sportScore"] == 1:
+            tweet_dict_sport[i] = tweet_dict[i]
+        else:
+            tweet_dict_nonsport[i] = tweet_dict[i]
+
+    # write json output for sports related tweets
+    filename1 = data[:-5] + "_tagged_sport.json"
+    output1 = open(filename1, "w")
+    json.dump(tweet_dict_sport, output1, indent=2)
+    output1.close()
+
+    # write json output for non sports related tweets
+    filename2 = data[:-5] + "_tagged_nonsport.json"
+    output2 = open(filename2, "w")
+    json.dump(tweet_dict_nonsport, output2, indent=2)
+    output2.close()
 
     return
 
