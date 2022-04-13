@@ -65,8 +65,9 @@ def predict(N, docID, tweet_vecs):
         correct = 0
 
     actual = testing_data[0]
+    id = testing_data[2]
 
-    return prediction, actual, correct
+    return prediction, actual, correct, id
 
 
 def main():
@@ -79,16 +80,18 @@ def main():
 
     inverted_index = {}
     team_dict = {}
+    tweet_ids = {}
     x = 1
     for j in tweet_dict:
         full_tweet = tweet_dict[j]["text"].lower()
         team_dict[x] = tweet_dict[j]["team"]
+        tweet_ids[x] = j
 
         # create inverted index
         inverted_index = indexDocument(full_tweet, inverted_index, x)
         
         x += 1
-
+   
     tweet_vectors = {}
     N = len(tweet_dict)
 
@@ -126,7 +129,7 @@ def main():
             final_doc_vec.append(tfc)
         
         # add to dictionary of tweet vectors with corresponding team
-        tweet_vectors[i+1] = (team_dict[i+1], final_doc_vec)     
+        tweet_vectors[i+1] = (team_dict[i+1], final_doc_vec, tweet_ids[i+1])
 
     # test prints
     # print("After:", len(tweet_vectors))
@@ -142,10 +145,13 @@ def main():
     
     # get predictions for every tweet (leave-one-out)
     while z != N:
-        p, a, c = predict(N, z+1, tweet_vectors)
+        p, a, c, i = predict(N, z+1, tweet_vectors)
         num_correct += c
-        outstr = a + " " + p + "\n"
+        outstr = i + " " + p + "\n"
         output_file.write(outstr)
+
+        if z % 100 == 0:
+            print(z)
         
         z += 1
 
@@ -153,8 +159,8 @@ def main():
     acc = num_correct / len(tweet_dict)
     print("Accuracy: " + str(acc))
 
-    outstr2 = "Accuracy: " + str(acc) + "\n"
-    output_file.write(outstr2)
+    # outstr2 = "Accuracy: " + str(acc) + "\n"
+    # output_file.write(outstr2)
     output_file.close()
     
 
