@@ -2,7 +2,6 @@
 This file works to "tag" each tweet with a sport signifier.
 This signifier will tell the program whether or not the specified tweet is about
 sports or not. In this program, we are specifically looking at basketball.
-
 """
 # Max Anderson
 # mtando
@@ -700,7 +699,6 @@ def main():
     # load json data into list of tweets
     tweet_dict = json.loads(curr_file.read())
     curr_file.close()
-    
     # attach a sportScore to each tweet
     scoreTotal = 0
     for t in tweet_dict:

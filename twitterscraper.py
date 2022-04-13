@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import sys
 import os
 import time
 import json
@@ -14,9 +15,10 @@ This file should write the data in json format to a file in the data folder.
 #Authentication information
 api_consumer_key = environment.api_key
 api_consumer_secret = environment.api_secret
-bearer_token = environment.b_token
 access_token = environment.a_token
 access_secret = environment.a_secret
+# Only one used for twitter api v2.0
+bearer_token = environment.b_token
 
 nba_ids = {'Atlanta Hawks': 17292143, 'Boston Celtics': 18139461,
 'Brooklyn Nets': 18552281, 'Charlotte Hornets': 21308488, 'Chicago Bulls': 16212685,
@@ -31,72 +33,61 @@ nba_ids = {'Atlanta Hawks': 17292143, 'Boston Celtics': 18139461,
 'Washington Wizards': 14992591
 }
 
-# nba_ids = {
-#     'Atlanta Hawks': 17292143,
-#     'Detroit Pistons': 16727749,
-#     'Milwaukee Bucks': 15900167,
-#     'Sacramento Kings': 79538141,
-#     'Washington Wizards': 14992591
-# }
+def main():
+    # Set name of output_file per team here
+    arg_file = sys.argv[1]
+    # Check that output file is in arguments
+    if not arg_file:
+        print("Error: No output file specified. Exit(1)")
+        exit(1)
+    # Set number of users per team here
+    num_users_per_team = int(sys.argv[2])
+    # Check that num_users per team: 0 < num <= 20
+    if num_users_per_team < 1:
+        print("Error: Number of tweets per team must be > 1. Exit(1)")
+        exit(1)
+    if num_users_per_team > 20:
+        print("Error: Number of tweets per team must be < 110. Exit(1)")
+        exit(1)
 
-# Setting Authentication: *Not used for Twitter endpoints V2.0*
-auth = tweepy.OAuthHandler(api_consumer_key, api_consumer_secret)
-auth.set_access_token(access_token, access_secret)
-api = tweepy.API(auth, wait_on_rate_limit = True)
+    # Setting output file with data
+    output_file = "data/" + arg_file
+    # Setting Client: *Used for Twitter endpoints V2.0*
+    client = tweepy.Client(bearer_token= bearer_token)
 
-# Setting Client: *Used for Twitter endpoints V2.0*
-client = tweepy.Client(bearer_token= bearer_token)
-
-tweet_dict = {}
-hashtag_dict = {}
-start = time.time()
-# Loop through NBA Teams -> Get max_results amount of followers
-for team_name in nba_ids:
-    tweet_count = 0
-    api_count = 0
-    # Get max_results amount of followers
-    users = client.get_users_followers(id=nba_ids[team_name], max_results=330)
-    # Loop through followers returned -> Get max_results amount of tweets
-    for user in users.data:
-        if tweet_count > 74:
-            break
-        tweets = client.get_users_tweets(id=user.id, max_results=15)
-        if tweets.data == None:
-            continue
-        api_count += len(tweets.data)
-        for tweet in tweets.data:
-            raw_tweet, hashtags = preprocess(str(tweet))
-            if raw_tweet == "":
+    tweet_dict = {}
+    hashtag_dict = {}
+    start = time.time()
+    # Loop through NBA Teams -> Get max_results amount of followers
+    for team_name in nba_ids:
+        user_count = 0
+        # Get max_results amount of followers
+        users = client.get_users_followers(id=nba_ids[team_name], max_results=150)
+        # Loop through followers returned -> Get max_results amount of tweets
+        for user in users.data:
+            tweets = client.get_users_tweets(id=user.id, max_results=15)
+            if tweets.data == None:
                 continue
-            tweet_count += 1
-            tweet_dict[tweet.id] = {
-                "text": raw_tweet,
-                "team": team_name,
-                "user": user.username
-            }
-            if tweet_count > 74:
-                break
-            for hashtag in hashtags:
-                if hashtag in hashtag_dict:
-                    if team_name in hashtag_dict[hashtag]:
-                        hashtag_dict[hashtag][team_name] += 1
-                    else:
-                        hashtag_dict[hashtag][team_name] = 1
-                else:
-                    hashtag_dict[hashtag] = {
-                        team_name: 1
-                    }
-    # To avoid overloading twitter api (900 requests per 15 minutes)
-    running = time.time() - start
-    print(running)
-    print(team_name)
-    print(len(tweet_dict))
-    time.sleep(210)
+            for tweet in tweets.data:
+                raw_tweet, hashtags = preprocess(str(tweet))
+                if raw_tweet == "":
+                    continue
+                user_count += 1
+                tweet_dict[tweet.id] = {
+                    "text": raw_tweet,
+                    "team": team_name,
+                    "user": user.username
+                }
+                if user_count > num_users_per_team:
+                    break
+        # To avoid overloading twitter api (900 requests per 15 minutes)
+        print(tweet_dict)
+        time.sleep(120)
 
-print("program took ", time.time() - start, " seconds")
-out_file = open("data/dataset2250.json", "w")
-json.dump(tweet_dict, out_file, indent="")
-out_file.close()
-out_file = open("data/hashtags2250.json", "w")
-json.dump(hashtag_dict, out_file, indent="")
-out_file.close()
+    print("program took ", time.time() - start, " seconds")
+    out_file = open(output_file, "w")
+    json.dump(tweet_dict, out_file, indent="")
+    out_file.close()
+
+if __name__ == "__main__":
+    main()
