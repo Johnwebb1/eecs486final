@@ -699,7 +699,6 @@ def main():
     # load json data into list of tweets
     tweet_dict = json.loads(curr_file.read())
     curr_file.close()
-
     # attach a sportScore to each tweet
     scoreTotal = 0
     for t in tweet_dict:
