@@ -12,6 +12,7 @@ Text classification
 
 import sys
 import os
+import json
 
 teamNames = [
     "boston celtics",
@@ -371,6 +372,8 @@ playerNames = [
     "LeBron James",
     "LBJ",
     "Bron",
+    "KingJames",
+    "King James",
     "Ty Jerome",
     "Isaiah Joe",
     "Cameron Johnson",
@@ -694,20 +697,24 @@ playerNames = [
 
 def main():
     data = sys.argv[1]
-    
+    curr_file = open(data, "r")
+
     # load json data into list of tweets
+    tweet_dict = json.loads(curr_file.read())
+    curr_file.close()
     
     # for testing
-    tweetlist = [
-        "This is a tweet about movies.",
-        "The NBA is awesome!",
-        "Cade Cunningham is so good.",
-        "Go Pistons!",
-        "i'm a big fan of saddiq bey"
-        ]
+    # tweetlist = [
+    #     "This is a tweet about movies.",
+    #     "The NBA is awesome!",
+    #     "Cade Cunningham is so good.",
+    #     "Go Pistons!",
+    #     "i'm a big fan of saddiq bey"
+    #     ]
 
-    for t in tweetlist:
-        tweet = t.lower()
+    scoreTotal = 0
+    for t in tweet_dict:
+        tweet = tweet_dict[t]["text"].lower()
         sportScore = 0
 
         for tn in teamNames:
@@ -721,14 +728,31 @@ def main():
                 sportScore = 1
 
         # assign sportscore to tweet
+        scoreTotal += sportScore
+        tweet_dict[t]["sportScore"] = sportScore
 
-        # for testing 
-        print(tweet)
-        print(sportScore)
-        print("---------------------------------------------")
+    # for testing
+    print(scoreTotal)
 
-    # write json output
-         
+    tweet_dict_sport = {}
+    tweet_dict_nonsport = {}
+    for i in tweet_dict:
+        if tweet_dict[i]["sportScore"] == 1:
+            tweet_dict_sport[i] = tweet_dict[i]
+        else:
+            tweet_dict_nonsport[i] = tweet_dict[i]
+
+    # write json output for sports related tweets
+    filename1 = data[:-5] + "_tagged_sport.json"
+    output1 = open(filename1, "w")
+    json.dump(tweet_dict_sport, output1, indent=2)
+    output1.close()
+
+    # write json output for non sports related tweets
+    filename2 = data[:-5] + "_tagged_nonsport.json"
+    output2 = open(filename2, "w")
+    json.dump(tweet_dict_nonsport, output2, indent=2)
+    output2.close()
 
     return
 
