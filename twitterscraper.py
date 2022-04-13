@@ -31,6 +31,14 @@ nba_ids = {'Atlanta Hawks': 17292143, 'Boston Celtics': 18139461,
 'Washington Wizards': 14992591
 }
 
+# nba_ids = {
+#     'Atlanta Hawks': 17292143,
+#     'Detroit Pistons': 16727749,
+#     'Milwaukee Bucks': 15900167,
+#     'Sacramento Kings': 79538141,
+#     'Washington Wizards': 14992591
+# }
+
 # Setting Authentication: *Not used for Twitter endpoints V2.0*
 auth = tweepy.OAuthHandler(api_consumer_key, api_consumer_secret)
 auth.set_access_token(access_token, access_secret)
@@ -44,51 +52,51 @@ hashtag_dict = {}
 start = time.time()
 # Loop through NBA Teams -> Get max_results amount of followers
 for team_name in nba_ids:
+    tweet_count = 0
     api_count = 0
     # Get max_results amount of followers
-    users = client.get_users_followers(id=nba_ids[team_name], max_results=100)
+    users = client.get_users_followers(id=nba_ids[team_name], max_results=330)
     # Loop through followers returned -> Get max_results amount of tweets
-    user_count = 0
     for user in users.data:
-        tweets = client.get_users_tweets(id=user.id, max_results=5)
+        if tweet_count > 74:
+            break
+        tweets = client.get_users_tweets(id=user.id, max_results=15)
         if tweets.data == None:
             continue
-        test = tweets.data[0]
-        test_tweet, hashtags = preprocess(str(test))
-        if test_tweet != "":
-            user_count += 1
-            for tweet in tweets.data:
-                raw_tweet, hashtags = preprocess(str(tweet))
-                if raw_tweet == "":
-                    continue
-                tweet_dict[tweet.id] = {
-                    "text": raw_tweet,
-                    "team": team_name,
-                    "user": user.username
-                }
-                for hashtag in hashtags:
-                    if hashtag in hashtag_dict:
-                        if team_name in hashtag_dict[hashtag]:
-                            hashtag_dict[hashtag][team_name] += 1
-                        else:
-                            hashtag_dict[hashtag][team_name] = 1
+        api_count += len(tweets.data)
+        for tweet in tweets.data:
+            raw_tweet, hashtags = preprocess(str(tweet))
+            if raw_tweet == "":
+                continue
+            tweet_count += 1
+            tweet_dict[tweet.id] = {
+                "text": raw_tweet,
+                "team": team_name,
+                "user": user.username
+            }
+            if tweet_count > 74:
+                break
+            for hashtag in hashtags:
+                if hashtag in hashtag_dict:
+                    if team_name in hashtag_dict[hashtag]:
+                        hashtag_dict[hashtag][team_name] += 1
                     else:
-                        hashtag_dict[hashtag] = {
-                            team_name: 1
-                        }
-        if user_count > 5:
-            break
+                        hashtag_dict[hashtag][team_name] = 1
+                else:
+                    hashtag_dict[hashtag] = {
+                        team_name: 1
+                    }
     # To avoid overloading twitter api (900 requests per 15 minutes)
     running = time.time() - start
     print(running)
     print(team_name)
-    print("users: ", user_count)
-    time.sleep(150)
+    print(len(tweet_dict))
+    time.sleep(210)
 
 print("program took ", time.time() - start, " seconds")
-out_file = open("data/small.json", "w")
+out_file = open("data/dataset2250.json", "w")
 json.dump(tweet_dict, out_file, indent="")
 out_file.close()
-out_file = open("data/small_hashtag.json", "w")
+out_file = open("data/hashtags2250.json", "w")
 json.dump(hashtag_dict, out_file, indent="")
 out_file.close()
