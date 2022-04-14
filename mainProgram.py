@@ -1,16 +1,37 @@
-"""
-This file works to "tag" each tweet with a sport signifier.
-This signifier will tell the program whether or not the specified tweet is about
-sports or not. In this program, we are specifically looking at basketball.
-"""
-# Max Anderson
-# mtando
-# EECS 486 Final Project
-
+#!/usr/bin/env python3
 import sys
+import twitterscraper2
+import tagging
+import rocchio
+import naivebayes
+import knn
+import environment
+import toxicity
 import os
-import json
 
+'''
+Global variables needed for functions defined here:
+'''
+#Authentication information
+api_consumer_key = environment.api_key
+api_consumer_secret = environment.api_secret
+access_token = environment.a_token
+access_secret = environment.a_secret
+# Only one used for twitter api v2.0
+bearer_token = environment.b_token
+
+nba_ids = {'Atlanta Hawks': 17292143, 'Boston Celtics': 18139461,
+'Brooklyn Nets': 18552281, 'Charlotte Hornets': 21308488, 'Chicago Bulls': 16212685,
+'Cleveland Cavaliers': 19263978, 'Dallas Mavericks': 22185437, 'Denver Nuggets': 26074296,
+'Detroit Pistons': 16727749, 'Golden State Warriors': 26270913, 'Houston Rockets': 19077044,
+'Indiana Pacers': 19409270, 'Los Angeles Clippers': 19564719, 'Los Angeles Lakers': 20346956,
+'Memphis Grizzlies': 7117962, 'Miami Heat': 11026952, 'Milwaukee Bucks': 15900167,
+'Minnesota Timberwolves': 20196159, 'New Orleans Pelicans': 24903350, 'New York Knicks': 20265254,
+'Oklahoma City Thunder': 24925573, 'Orlando Magic': 19537303, 'Philadelphia 76ers': 16201775,
+'Phoenix Suns': 18481113, 'Portland Trail Blazers': 6395222, 'Sacramento Kings': 667563,
+'San Antonio Spurs': 18371803, 'Toronto Raptors': 73406718, 'Utah Jazz': 18360370,
+'Washington Wizards': 14992591
+}
 
 # list of all teams and team mascots
 teamNames = [
@@ -691,110 +712,66 @@ playerNames = [
     "Ivica Zubac"
     ]
 
-def mainPipeline2(data_input):
-    data = data_input
-    curr_file = open(data, "r")
-
-    # load json data into list of tweets
-    tweet_dict = json.loads(curr_file.read())
-    curr_file.close()
-    # attach a sportScore to each tweet
-    scoreTotal = 0
-    for t in tweet_dict:
-        tweet = tweet_dict[t]["text"].lower()
-        sportScore = 0
-
-        for tn in teamNames:
-            if tn in tweet:
-                sportScore = 1
-        for bt in basketballTerms:
-            if bt in tweet:
-                sportScore = 1
-        for pn in playerNames:
-            if pn.lower() in tweet:
-                sportScore = 1
-
-        scoreTotal += sportScore
-        tweet_dict[t]["sportScore"] = sportScore
-
-    # for testing
-    # print(scoreTotal)
-
-    # split full dictionary into sports related and non sports related tweets
-    tweet_dict_sport = {}
-    tweet_dict_nonsport = {}
-    for i in tweet_dict:
-        if tweet_dict[i]["sportScore"] == 1:
-            tweet_dict_sport[i] = tweet_dict[i]
-        else:
-            tweet_dict_nonsport[i] = tweet_dict[i]
-
-    # write json output for sports related tweets
-    filename1 = data[:-5] + "_tagged_sport.json"
-    output1 = open(filename1, "w")
-    json.dump(tweet_dict_sport, output1, indent=2)
-    output1.close()
-
-    # write json output for non sports related tweets
-    filename2 = data[:-5] + "_tagged_nonsport.json"
-    output2 = open(filename2, "w")
-    json.dump(tweet_dict_nonsport, output2, indent=2)
-    output2.close()
-
-    return
-
+teams = ["Cleveland Cavaliers", "Atlanta Hawks", "Golden State Warriors",
+"New Orleans Pelicans", "Milwaukee Bucks", "Memphis Grizzlies","Boston Celtics",
+"Brooklyn Nets", "New York Knicks",
+"Philadelphia 76ers", "Toronto Raptors", "Chicago Bulls",
+"Detroit Pistons", "Indiana Pacers",
+"Charlotte Hornets", "Miami Heat", "Orlando Magic", "Washington Wizards",
+"Denver Nuggets", "Minnesota Timberwolves", "Oklahoma City Thunder",
+"Portland Trail Blazers", "Utah Jazz", "Los Angeles Clippers",
+"Los Angeles Lakers", "Phoenix Suns", "Sacramento Kings", "Dallas Mavericks",
+"Houston Rockets", "San Antonio Spurs"]
 
 def main():
-    data = sys.argv[1]
-    curr_file = open(data, "r")
+    # Set name of output_file per team here
+    output_data_file_1 = sys.argv[1]
+    # Check that output file is in arguments
+    if not output_data_file_1:
+        print("Error: No output file specified. Exit(1)")
+        exit(1)
+    ending_file = output_data_file_1[-5:]
+    if ending_file != ".json":
+        print("Error: Output file must be of type .json")
+        exit(1)
 
-    # load json data into list of tweets
-    tweet_dict = json.loads(curr_file.read())
-    curr_file.close()
-    # attach a sportScore to each tweet
-    scoreTotal = 0
-    for t in tweet_dict:
-        tweet = tweet_dict[t]["text"].lower()
-        sportScore = 0
+    # Set number of tweets per team here
+    num_tweets_per_team_1 = int(sys.argv[2])
+    # Check that num_tweets per team: 0 < num <= 150
+    if num_tweets_per_team_1 < 1:
+        print("Error: Number of tweets per team must be > 1. Exit(1)")
+        exit(1)
+    if num_tweets_per_team_1 > 150:
+        print("Error: Number of tweets per team must be < 110. Exit(1)")
+        exit(1)
 
-        for tn in teamNames:
-            if tn in tweet:
-                sportScore = 1
-        for bt in basketballTerms:
-            if bt in tweet:
-                sportScore = 1
-        for pn in playerNames:
-            if pn.lower() in tweet:
-                sportScore = 1
+    if not os.path.exists('data'):
+        os.makedirs('data')
 
-        scoreTotal += sportScore
-        tweet_dict[t]["sportScore"] = sportScore
+    print("Starting twitter scraper")
+    twitterscraper2.mainPipeline1(output_data_file_1, num_tweets_per_team_1)
 
-    # for testing
-    # print(scoreTotal)
+    data_file_1 = "data/" + output_data_file_1
 
-    # split full dictionary into sports related and non sports related tweets
-    tweet_dict_sport = {}
-    tweet_dict_nonsport = {}
-    for i in tweet_dict:
-        if tweet_dict[i]["sportScore"] == 1:
-            tweet_dict_sport[i] = tweet_dict[i]
-        else:
-            tweet_dict_nonsport[i] = tweet_dict[i]
+    print("starting tagging")
+    tagging.mainPipeline2(data_file_1)
 
-    # write json output for sports related tweets
-    filename1 = data[:-5] + "_tagged_sport.json"
-    output1 = open(filename1, "w")
-    json.dump(tweet_dict_sport, output1, indent=2)
-    output1.close()
+    data_file_sports = data_file_1[:-5] + "_tagged_sport.json"
+    data_file_nonsports = data_file_1[:-5] + "_tagged_nonsport.json"
 
-    # write json output for non sports related tweets
-    filename2 = data[:-5] + "_tagged_nonsport.json"
-    output2 = open(filename2, "w")
-    json.dump(tweet_dict_nonsport, output2, indent=2)
-    output2.close()
+    print("starting naivebayes")
+    naivebayes.mainPipeline4(data_file_1)
 
-    return
+    print("starting knn")
+    knn.mainPipeline5(data_file_1, 9)
+
+    print("starting rocchio")
+    rocchio.mainPipeline3(data_file_1)
+    rocchio.mainPipeline3Sports(data_file_sports)
+    rocchio.mainPipeline3Nonsports(data_file_nonsports)
+
+    print("starting toxicity")
+    toxicity.toxicityScores(data_file_1)
 
 if __name__ == "__main__":
     main()

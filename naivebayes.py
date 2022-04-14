@@ -79,6 +79,26 @@ def testNaiveBayes(test, class_prob, word_prob, teams_no_word, data):
             answer = team
     return answer
 
+
+def mainPipeline4(file_input):
+    file = file_input
+    correct = 0
+    output_file = open("naivebayes.output", 'w')
+    f = open(file)
+    data = json.load(f)
+    count = 0
+    for test in data:
+        class_prob, word_prob, teams_no_word = trainNaiveBayes(data, test)
+        answer = testNaiveBayes(test, class_prob, word_prob, teams_no_word, data)
+        output_file.write(test + " " + answer + "\n")
+        count += 1
+        if data[test]["team"] == answer:
+            correct += 1
+    print(correct / count)
+
+    f.close()
+
+
 def main():
     file = sys.argv[1]
     correct = 0

@@ -1,0 +1,8 @@
+###### Requirements without Version Specifiers ######
+
+tweepy
+langdetect
+numpy
+torch
+transformers
+matplotlib

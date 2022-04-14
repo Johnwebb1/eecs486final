@@ -62,6 +62,36 @@ def get_KNN(test, inverted_index, max_tf, size, test_vect, test_max_tf, data):
         final_scores[id] = math.sqrt(final_scores[id])
     return final_scores
 
+def mainPipeline5(file_input, knn_input):
+    file = file_input
+    knn = int(knn_input)
+    output_file = open("knn.output", 'w')
+    f = open(file)
+    data = json.load(f)
+    size = len(data) - 1
+    inverted_index = {}
+    max_tf = {}
+    final_scores = {}
+    count = 0
+    correct = 0
+    for test in data:
+        knn_teams = {}
+        inverted_index, max_tf, test_vect, test_max_tf = indexDocument(test, data)
+        final_scores = get_KNN(test, inverted_index, max_tf, size, test_vect, test_max_tf, data)
+        sorted_tuples = sorted(final_scores.items(), key=lambda item: item[1], reverse=False)
+        for i in range(0,knn):
+            team = data[sorted_tuples[i][0]]["team"]
+            if team not in knn_teams:
+                knn_teams[team] = 0
+            knn_teams[team] += 1
+        sorted_knn = sorted(knn_teams.items(), key=lambda item: item[1], reverse=True)
+        answer = sorted_knn[0][0]
+        if answer == data[test]["team"]:
+            correct+=1
+        count += 1
+        output_file.write(test + " " + answer + "\n")
+    f.close()
+
 
 
 def main():

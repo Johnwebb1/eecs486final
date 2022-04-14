@@ -70,6 +70,296 @@ def predict(N, docID, tweet_vecs):
     return prediction, actual, correct, id
 
 
+def mainPipeline3(data_input):
+    data = data_input
+    curr_file = open(data, "r")
+
+    # load json data into list of tweets
+    tweet_dict = json.loads(curr_file.read())
+    curr_file.close()
+
+    inverted_index = {}
+    team_dict = {}
+    tweet_ids = {}
+    x = 1
+    for j in tweet_dict:
+        full_tweet = tweet_dict[j]["text"].lower()
+        team_dict[x] = tweet_dict[j]["team"]
+        tweet_ids[x] = j
+
+        # create inverted index
+        inverted_index = indexDocument(full_tweet, inverted_index, x)
+        
+        x += 1
+   
+    tweet_vectors = {}
+    N = len(tweet_dict)
+
+    # calculate tf-idf for every tweet
+    for i in range(len(tweet_dict)):
+        # calculate t
+        doc_vec_t = {}
+        for p1 in inverted_index:
+            if (i+1) in inverted_index[p1]:
+                doc_vec_t[p1] = inverted_index[p1][i+1]
+            else:
+                doc_vec_t[p1] = 0
+        
+        # calculate tf
+        doc_vec_tf = {}
+        for p2 in inverted_index:
+            n = len(inverted_index[p2])
+            f = math.log((N / n), 10)
+            tf = doc_vec_t[p2] * f
+            doc_vec_tf[p2] = tf
+
+        # calculate tfc (normalization)
+        vec_total = 0
+        for p3 in inverted_index:
+            vec_total += (doc_vec_tf[p3] ** 2)
+
+        if vec_total == 0:
+            vec_len = 1
+        else:
+            vec_len = math.sqrt(vec_total)
+
+        final_doc_vec = []
+        for n in doc_vec_tf:
+            tfc = doc_vec_tf[n] / vec_len
+            final_doc_vec.append(tfc)
+        
+        # add to dictionary of tweet vectors with corresponding team
+        tweet_vectors[i+1] = (team_dict[i+1], final_doc_vec, tweet_ids[i+1])
+
+    # test prints
+    # print("After:", len(tweet_vectors))
+    # print(len(tweet_vectors[1][1]))
+    # print(len(tweet_vectors[2][1]))
+
+    # output file
+    outfile_name = "rocchio.output.txt"
+    output_file = open(outfile_name, "w")
+
+    z = 0
+    num_correct = 0
+    
+    # get predictions for every tweet (leave-one-out)
+    while z != N:
+        p, a, c, i = predict(N, z+1, tweet_vectors)
+        num_correct += c
+        outstr = i + " " + p + "\n"
+        output_file.write(outstr)
+
+        if z % 100 == 0:
+            print(z)
+        
+        z += 1
+
+    # calculate accuracy
+    acc = num_correct / len(tweet_dict)
+    print("Accuracy: " + str(acc))
+
+    # outstr2 = "Accuracy: " + str(acc) + "\n"
+    # output_file.write(outstr2)
+    output_file.close()
+    
+
+    return
+
+
+def mainPipeline3Sports(data_input):
+    data = data_input
+    curr_file = open(data, "r")
+
+    # load json data into list of tweets
+    tweet_dict = json.loads(curr_file.read())
+    curr_file.close()
+
+    inverted_index = {}
+    team_dict = {}
+    tweet_ids = {}
+    x = 1
+    for j in tweet_dict:
+        full_tweet = tweet_dict[j]["text"].lower()
+        team_dict[x] = tweet_dict[j]["team"]
+        tweet_ids[x] = j
+
+        # create inverted index
+        inverted_index = indexDocument(full_tweet, inverted_index, x)
+        
+        x += 1
+   
+    tweet_vectors = {}
+    N = len(tweet_dict)
+
+    # calculate tf-idf for every tweet
+    for i in range(len(tweet_dict)):
+        # calculate t
+        doc_vec_t = {}
+        for p1 in inverted_index:
+            if (i+1) in inverted_index[p1]:
+                doc_vec_t[p1] = inverted_index[p1][i+1]
+            else:
+                doc_vec_t[p1] = 0
+        
+        # calculate tf
+        doc_vec_tf = {}
+        for p2 in inverted_index:
+            n = len(inverted_index[p2])
+            f = math.log((N / n), 10)
+            tf = doc_vec_t[p2] * f
+            doc_vec_tf[p2] = tf
+
+        # calculate tfc (normalization)
+        vec_total = 0
+        for p3 in inverted_index:
+            vec_total += (doc_vec_tf[p3] ** 2)
+
+        if vec_total == 0:
+            vec_len = 1
+        else:
+            vec_len = math.sqrt(vec_total)
+
+        final_doc_vec = []
+        for n in doc_vec_tf:
+            tfc = doc_vec_tf[n] / vec_len
+            final_doc_vec.append(tfc)
+        
+        # add to dictionary of tweet vectors with corresponding team
+        tweet_vectors[i+1] = (team_dict[i+1], final_doc_vec, tweet_ids[i+1])
+
+    # test prints
+    # print("After:", len(tweet_vectors))
+    # print(len(tweet_vectors[1][1]))
+    # print(len(tweet_vectors[2][1]))
+
+    # output file
+    outfile_name = "rocchio.basketball.output.txt"
+    output_file = open(outfile_name, "w")
+
+    z = 0
+    num_correct = 0
+    
+    # get predictions for every tweet (leave-one-out)
+    while z != N:
+        p, a, c, i = predict(N, z+1, tweet_vectors)
+        num_correct += c
+        outstr = i + " " + p + "\n"
+        output_file.write(outstr)
+
+        if z % 100 == 0:
+            print(z)
+        
+        z += 1
+
+    # calculate accuracy
+    acc = num_correct / len(tweet_dict)
+    print("Accuracy: " + str(acc))
+
+    # outstr2 = "Accuracy: " + str(acc) + "\n"
+    # output_file.write(outstr2)
+    output_file.close()
+    
+
+    return
+
+def mainPipeline3Nonsports(data_input):
+    data = data_input
+    curr_file = open(data, "r")
+
+    # load json data into list of tweets
+    tweet_dict = json.loads(curr_file.read())
+    curr_file.close()
+
+    inverted_index = {}
+    team_dict = {}
+    tweet_ids = {}
+    x = 1
+    for j in tweet_dict:
+        full_tweet = tweet_dict[j]["text"].lower()
+        team_dict[x] = tweet_dict[j]["team"]
+        tweet_ids[x] = j
+
+        # create inverted index
+        inverted_index = indexDocument(full_tweet, inverted_index, x)
+        
+        x += 1
+   
+    tweet_vectors = {}
+    N = len(tweet_dict)
+
+    # calculate tf-idf for every tweet
+    for i in range(len(tweet_dict)):
+        # calculate t
+        doc_vec_t = {}
+        for p1 in inverted_index:
+            if (i+1) in inverted_index[p1]:
+                doc_vec_t[p1] = inverted_index[p1][i+1]
+            else:
+                doc_vec_t[p1] = 0
+        
+        # calculate tf
+        doc_vec_tf = {}
+        for p2 in inverted_index:
+            n = len(inverted_index[p2])
+            f = math.log((N / n), 10)
+            tf = doc_vec_t[p2] * f
+            doc_vec_tf[p2] = tf
+
+        # calculate tfc (normalization)
+        vec_total = 0
+        for p3 in inverted_index:
+            vec_total += (doc_vec_tf[p3] ** 2)
+
+        if vec_total == 0:
+            vec_len = 1
+        else:
+            vec_len = math.sqrt(vec_total)
+
+        final_doc_vec = []
+        for n in doc_vec_tf:
+            tfc = doc_vec_tf[n] / vec_len
+            final_doc_vec.append(tfc)
+        
+        # add to dictionary of tweet vectors with corresponding team
+        tweet_vectors[i+1] = (team_dict[i+1], final_doc_vec, tweet_ids[i+1])
+
+    # test prints
+    # print("After:", len(tweet_vectors))
+    # print(len(tweet_vectors[1][1]))
+    # print(len(tweet_vectors[2][1]))
+
+    # output file
+    outfile_name = "rocchio.nonbasketball.output.txt"
+    output_file = open(outfile_name, "w")
+
+    z = 0
+    num_correct = 0
+    
+    # get predictions for every tweet (leave-one-out)
+    while z != N:
+        p, a, c, i = predict(N, z+1, tweet_vectors)
+        num_correct += c
+        outstr = i + " " + p + "\n"
+        output_file.write(outstr)
+
+        if z % 100 == 0:
+            print(z)
+        
+        z += 1
+
+    # calculate accuracy
+    acc = num_correct / len(tweet_dict)
+    print("Accuracy: " + str(acc))
+
+    # outstr2 = "Accuracy: " + str(acc) + "\n"
+    # output_file.write(outstr2)
+    output_file.close()
+    
+
+    return
+
+
 def main():
     data = sys.argv[1]
     curr_file = open(data, "r")

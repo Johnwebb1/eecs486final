@@ -33,6 +33,73 @@ nba_ids = {'Atlanta Hawks': 17292143, 'Boston Celtics': 18139461,
 'Washington Wizards': 14992591
 }
 
+def mainPipeline1(arg_file_input, num_tweets_per_team_input):
+    # Set name of output_file per team here
+    arg_file = arg_file_input
+    # Check that output file is in arguments
+    if not arg_file:
+        print("Error: No output file specified. Exit(1)")
+        exit(1)
+    # Set number of tweets per team here
+    num_tweets_per_team = int(num_tweets_per_team_input)
+    # Check that num_tweets per team: 0 < num <= 150
+    if num_tweets_per_team < 1:
+        print("Error: Number of tweets per team must be > 1. Exit(1)")
+        exit(1)
+    if num_tweets_per_team > 150:
+        print("Error: Number of tweets per team must be < 110. Exit(1)")
+        exit(1)
+    # Setting output file with data
+    output_file = "data/" + arg_file
+
+    # Setting Client: *Used for Twitter endpoints V2.0*
+    client = tweepy.Client(bearer_token= bearer_token)
+
+    tweet_dict = {}
+    hashtag_dict = {}
+    start = time.time()
+    # Loop through NBA Teams -> Get max_results amount of followers
+    for team_name in nba_ids:
+        tweet_count = 0
+        # Get max_results = 20 amount of followers
+        nba_tweets = client.get_users_tweets(id=nba_ids[team_name], max_results=25)
+        for nba_tweet in nba_tweets.data:
+            users = client.get_liking_users(id=nba_tweet.id, max_results=100)
+            if users.data == None:
+                continue
+            if len(users.data) > 89:
+                break
+        # Loop through followers returned -> Get max_results amount of tweets
+        for user in users.data:
+            if tweet_count >= num_tweets_per_team:
+                break
+            tweets = client.get_users_tweets(id=user.id, max_results=15)
+            if tweets.data == None:
+                continue
+            for tweet in tweets.data:
+                raw_tweet, hashtags = preprocess(str(tweet))
+                if raw_tweet == "":
+                    continue
+                tweet_count += 1
+                tweet_dict[tweet.id] = {
+                    "text": raw_tweet,
+                    "team": team_name,
+                    "user": user.username
+                }
+                if tweet_count >= num_tweets_per_team:
+                    break
+        # Dumping to save progress
+        out_file = open(output_file, "w")
+        json.dump(tweet_dict, out_file, indent="")
+        out_file.close()
+        # To avoid overloading twitter api (900 requests per 15 minutes)
+        time.sleep(75)
+
+    print("program took ", time.time() - start, " seconds")
+    out_file = open(output_file, "w")
+    json.dump(tweet_dict, out_file, indent="")
+    out_file.close()
+
 def main():
     # Set name of output_file per team here
     arg_file = sys.argv[1]
