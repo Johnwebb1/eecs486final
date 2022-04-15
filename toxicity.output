@@ -1,0 +1,207 @@
+Naive Bayes:
+    Accuracy: 0.1949592290585619
+    Precision: 0.9995959595959596
+    Recall: 0.033333333333333326
+    F1: 0.06451528782841122
+        Atlanta Hawks, Average Toxicity: 0.25393055928380864
+        Boston Celtics, Average Toxicity: 0.04164185047149658
+        Brooklyn Nets, Average Toxicity: 0.21460802853107452
+        Charlotte Hornets, Average Toxicity: 0.22626451956920135
+        Chicago Bulls, Average Toxicity: 0.27802601107605945
+        Cleveland Cavaliers, Average Toxicity: 0.019913385530094523
+        Dallas Mavericks, Average Toxicity: 0.10874334558264001
+        Denver Nuggets, Average Toxicity: -0.04235749244689942
+        Detroit Pistons, Average Toxicity: 0.34476443482380287
+        Golden State Warriors, Average Toxicity: 0.3193087261170149
+        Houston Rockets, Average Toxicity: -0.15373600419196817
+        Indiana Pacers, Average Toxicity: 0.31690210551023484
+        Los Angeles Clippers, Average Toxicity: 0.21518598471657704
+        Los Angeles Lakers, Average Toxicity: -0.0072376935981040775
+        Memphis Grizzlies, Average Toxicity: 0.20834215134382247
+        Miami Heat, Average Toxicity: 0.004681303339489436
+        Milwaukee Bucks, Average Toxicity: 0.11918622404336929
+        Minnesota Timberwolves, Average Toxicity: 0.18222953040200754
+        New Orleans Pelicans, Average Toxicity: 0.03453125395216383
+        New York Knicks, Average Toxicity: 0.04419276272428447
+        Oklahoma City Thunder, Average Toxicity: 0.15970117376561752
+        Orlando Magic, Average Toxicity: 0.14958977639073073
+        Philadelphia 76ers, Average Toxicity: 0.1488345762093862
+        Phoenix Suns, Average Toxicity: 0.13064907364926096
+        Portland Trail Blazers, Average Toxicity: -0.021942442168994825
+        Sacramento Kings, Average Toxicity: 0.2872874162218592
+        San Antonio Spurs, Average Toxicity: 0.11210782977999473
+        Toronto Raptors, Average Toxicity: -0.026897680961479573
+        Utah Jazz, Average Toxicity: -0.01781596454246989
+        Washington Wizards, Average Toxicity: 0.19121264897543808
+Rocchio:
+    Accuracy: 0.22424017790956263
+    Precision: 0.9996969696969698
+    Recall: 0.03333333333333333
+    F1: 0.06451549819106286
+        Atlanta Hawks, Average Toxicity: 0.1846238792832218
+        Boston Celtics, Average Toxicity: 0.00973272080324134
+        Brooklyn Nets, Average Toxicity: 0.18455018401145934
+        Charlotte Hornets, Average Toxicity: 0.13846723216303278
+        Chicago Bulls, Average Toxicity: 0.25041334360957623
+        Cleveland Cavaliers, Average Toxicity: 0.05460575002754851
+        Dallas Mavericks, Average Toxicity: 0.07388567353816743
+        Denver Nuggets, Average Toxicity: -0.0441534702140506
+        Detroit Pistons, Average Toxicity: 0.28836028337478636
+        Golden State Warriors, Average Toxicity: 0.2612044396607772
+        Houston Rockets, Average Toxicity: -0.11668380967662852
+        Indiana Pacers, Average Toxicity: 0.3733968242355015
+        Los Angeles Clippers, Average Toxicity: 0.21934795528650283
+        Los Angeles Lakers, Average Toxicity: 0.02080241906440864
+        Memphis Grizzlies, Average Toxicity: 0.16767249923003347
+        Miami Heat, Average Toxicity: -0.011699743871766378
+        Milwaukee Bucks, Average Toxicity: 0.10553761890956334
+        Minnesota Timberwolves, Average Toxicity: 0.17723978320864656
+        New Orleans Pelicans, Average Toxicity: 0.021043833438640854
+        New York Knicks, Average Toxicity: 0.06416028117857916
+        Oklahoma City Thunder, Average Toxicity: 0.2105814526821005
+        Orlando Magic, Average Toxicity: 0.1477064863328011
+        Philadelphia 76ers, Average Toxicity: 0.0976280700258848
+        Phoenix Suns, Average Toxicity: 0.09416014580499558
+        Portland Trail Blazers, Average Toxicity: -0.007965974509716034
+        Sacramento Kings, Average Toxicity: 0.2802065699294423
+        San Antonio Spurs, Average Toxicity: 0.1355263183691672
+        Toronto Raptors, Average Toxicity: -0.03738975723584493
+        Utah Jazz, Average Toxicity: -0.02678104811724182
+        Washington Wizards, Average Toxicity: 0.1842662943296196
+Rocchio Basketball:
+    Accuracy: 0.3616692426584235
+    Precision: 0.7639635138311986
+    Recall: 0.03333333333333333
+    F1: 0.06387947111945583
+        Atlanta Hawks, Average Toxicity: 0.16777010892061578
+        Boston Celtics, Average Toxicity: 0.011937031039485225
+        Brooklyn Nets, Average Toxicity: 0.16176478564739227
+        Charlotte Hornets, Average Toxicity: 0.11083686668822106
+        Chicago Bulls, Average Toxicity: 0.24926365136207265
+        Cleveland Cavaliers, Average Toxicity: 0.03221628660894144
+        Dallas Mavericks, Average Toxicity: 0.07753575089001896
+        Denver Nuggets, Average Toxicity: -0.038819330409892557
+        Detroit Pistons, Average Toxicity: 0.24923264748090274
+        Golden State Warriors, Average Toxicity: 0.2452123311101174
+        Houston Rockets, Average Toxicity: -0.10874507595331241
+        Indiana Pacers, Average Toxicity: 0.36799826496525817
+        Los Angeles Clippers, Average Toxicity: 0.20969398385948604
+        Los Angeles Lakers, Average Toxicity: 0.02024405899938646
+        Memphis Grizzlies, Average Toxicity: 0.16642121192234666
+        Miami Heat, Average Toxicity: 0.005573003479603971
+        Milwaukee Bucks, Average Toxicity: 0.10553761890956334
+        Minnesota Timberwolves, Average Toxicity: 0.17911104771195266
+        New Orleans Pelicans, Average Toxicity: 0.035625990303590656
+        New York Knicks, Average Toxicity: 0.06369247295883264
+        Oklahoma City Thunder, Average Toxicity: 0.20631290972232819
+        Orlando Magic, Average Toxicity: 0.1527637348256328
+        Philadelphia 76ers, Average Toxicity: 0.12296141125261784
+        Phoenix Suns, Average Toxicity: 0.10599727195794464
+        Portland Trail Blazers, Average Toxicity: -0.007862520295304137
+        Sacramento Kings, Average Toxicity: 0.28554256738356826
+        San Antonio Spurs, Average Toxicity: 0.12671788828966785
+        Toronto Raptors, Average Toxicity: -0.024515877801475794
+        Utah Jazz, Average Toxicity: -0.027994115326358596
+        Washington Wizards, Average Toxicity: 0.19557472109794616
+Rocchio Non-Basketball:
+    Accuracy: 0.166747927840078
+    Precision: 0.9476249574435927
+    Recall: 0.03333333333333333
+    F1: 0.06440130814621192
+        Atlanta Hawks, Average Toxicity: 0.1408032478138619
+        Boston Celtics, Average Toxicity: 0.032607532929683075
+        Brooklyn Nets, Average Toxicity: 0.14164277628848426
+        Charlotte Hornets, Average Toxicity: 0.1456705305698144
+        Chicago Bulls, Average Toxicity: 0.2581380910902138
+        Cleveland Cavaliers, Average Toxicity: 0.057800369762749264
+        Dallas Mavericks, Average Toxicity: 0.05622387372259724
+        Denver Nuggets, Average Toxicity: -0.05443284498019652
+        Detroit Pistons, Average Toxicity: 0.250354161045768
+        Golden State Warriors, Average Toxicity: 0.21146598116805157
+        Houston Rockets, Average Toxicity: -0.1048899007688773
+        Indiana Pacers, Average Toxicity: 0.32111898818648005
+        Los Angeles Clippers, Average Toxicity: 0.20932074419913754
+        Los Angeles Lakers, Average Toxicity: 0.014169092575709025
+        Memphis Grizzlies, Average Toxicity: 0.14797007074522658
+        Miami Heat, Average Toxicity: 0.018593854409583072
+        Milwaukee Bucks, Average Toxicity: 0.10142773337531508
+        Minnesota Timberwolves, Average Toxicity: 0.18504496842684975
+        New Orleans Pelicans, Average Toxicity: 0.038013550572925145
+        New York Knicks, Average Toxicity: 0.027194011899141165
+        Oklahoma City Thunder, Average Toxicity: 0.13178203175110476
+        Orlando Magic, Average Toxicity: 0.1559185954657468
+        Philadelphia 76ers, Average Toxicity: 0.09925468888863054
+        Phoenix Suns, Average Toxicity: 0.11287800690067132
+        Portland Trail Blazers, Average Toxicity: 0.02857651598250385
+        Sacramento Kings, Average Toxicity: 0.2530113430414134
+        San Antonio Spurs, Average Toxicity: 0.11564950230000895
+        Toronto Raptors, Average Toxicity: -0.04813605729414492
+        Utah Jazz, Average Toxicity: -0.04290624188984552
+        Washington Wizards, Average Toxicity: 0.200726233913513
+KNN:
+    Accuracy: 0.09154929577464789
+    Precision: 0.9995875420875424
+    Recall: 0.03333333333333333
+    F1: 0.06451527029633311
+        Atlanta Hawks, Average Toxicity: 0.1286179070570031
+        Boston Celtics, Average Toxicity: 0.09166944026947021
+        Brooklyn Nets, Average Toxicity: 0.16094048058285432
+        Charlotte Hornets, Average Toxicity: 0.1581171154975891
+        Chicago Bulls, Average Toxicity: 0.24999042685058984
+        Cleveland Cavaliers, Average Toxicity: 0.061170811967069146
+        Dallas Mavericks, Average Toxicity: 0.053130535812644694
+        Denver Nuggets, Average Toxicity: -0.013193258009923596
+        Detroit Pistons, Average Toxicity: 0.24828491318091916
+        Golden State Warriors, Average Toxicity: 0.21288212209939958
+        Houston Rockets, Average Toxicity: 0.017087015883294965
+        Indiana Pacers, Average Toxicity: 0.33498579089234515
+        Los Angeles Clippers, Average Toxicity: 0.233416423402928
+        Los Angeles Lakers, Average Toxicity: 0.0077605015989662945
+        Memphis Grizzlies, Average Toxicity: 0.15324828563592371
+        Miami Heat, Average Toxicity: 0.018112148336795947
+        Milwaukee Bucks, Average Toxicity: 0.0843292867459581
+        Minnesota Timberwolves, Average Toxicity: 0.18592174231044709
+        New Orleans Pelicans, Average Toxicity: 0.04242507976736044
+        New York Knicks, Average Toxicity: 0.06261993650358673
+        Oklahoma City Thunder, Average Toxicity: 0.15845067013165115
+        Orlando Magic, Average Toxicity: 0.16256609382015644
+        Philadelphia 76ers, Average Toxicity: 0.0973607094181694
+        Phoenix Suns, Average Toxicity: 0.11571001520863286
+        Portland Trail Blazers, Average Toxicity: 0.03201982378959656
+        Sacramento Kings, Average Toxicity: 0.25746967742728327
+        San Antonio Spurs, Average Toxicity: 0.11229335354335272
+        Toronto Raptors, Average Toxicity: -0.026418958021246868
+        Utah Jazz, Average Toxicity: -0.06097954274740052
+        Washington Wizards, Average Toxicity: 0.18849383029840924
+
+Ground Truth Team Average Toxicity:
+    Atlanta Hawks, Average Toxicity: 0.1454429040054251
+    Boston Celtics, Average Toxicity: 0.08831948795950556
+    Brooklyn Nets, Average Toxicity: 0.17378036429484686
+    Charlotte Hornets, Average Toxicity: 0.14956444526008267
+    Chicago Bulls, Average Toxicity: 0.21639207302175495
+    Cleveland Cavaliers, Average Toxicity: 0.05714696862626911
+    Dallas Mavericks, Average Toxicity: 0.07458569886202508
+    Denver Nuggets, Average Toxicity: -0.024425105817282376
+    Detroit Pistons, Average Toxicity: 0.22919141223181538
+    Golden State Warriors, Average Toxicity: 0.22469530999660492
+    Houston Rockets, Average Toxicity: 0.013776622168815074
+    Indiana Pacers, Average Toxicity: 0.25377455892823253
+    Los Angeles Clippers, Average Toxicity: 0.21590438979277338
+    Los Angeles Lakers, Average Toxicity: 0.009034645420381392
+    Memphis Grizzlies, Average Toxicity: 0.15651483613031883
+    Miami Heat, Average Toxicity: 0.02166565989437036
+    Milwaukee Bucks, Average Toxicity: 0.05678872721973605
+    Minnesota Timberwolves, Average Toxicity: 0.18455715869067066
+    New Orleans Pelicans, Average Toxicity: 0.03590123659937921
+    New York Knicks, Average Toxicity: 0.0524589056490686
+    Oklahoma City Thunder, Average Toxicity: 0.13610330770868773
+    Orlando Magic, Average Toxicity: 0.13325606919314764
+    Philadelphia 76ers, Average Toxicity: 0.09075621486771354
+    Phoenix Suns, Average Toxicity: 0.11940073453717762
+    Portland Trail Blazers, Average Toxicity: 0.0022839625739747554
+    Sacramento Kings, Average Toxicity: 0.265648996237295
+    San Antonio Spurs, Average Toxicity: 0.10395702923045438
+    Toronto Raptors, Average Toxicity: -0.006946000787946913
+    Utah Jazz, Average Toxicity: -0.05566663072238545
+    Washington Wizards, Average Toxicity: 0.18169425256576271
